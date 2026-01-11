@@ -6,20 +6,27 @@
 </head>
 <body>
 
-  <h1>GitHub Username Finder</h1>
+  <div class="card">
+    <h1>GitHub Username Finder</h1>
 
-  <div class="box">
-    <label>NUMBER OF USERNAME count:</label>
-    <input type="number" id="length" placeholder="e.g. 3">
+    <label>Username length</label>
+    <input type="number" id="length" placeholder="e.g. 4">
 
-    <label>NAME (optional prefix):</label>
-    <input type="text" id="prefix" placeholder="e.g. sy">
+    <label>Prefix (optional)</label>
+    <input type="text" id="prefix" placeholder="e.g. dev">
 
-    <button onclick="startFinding()">Find Available Usernames</button>
+    <button onclick="startFinding()">Start Finding</button>
+
+    <div class="progress-container">
+      <div id="progress"></div>
+    </div>
+
+    <p id="status">Idle</p>
+
+    <button class="export" onclick="exportResults()">Export Results (.txt)</button>
+
+    <ul id="results"></ul>
   </div>
-
-  <h2>Available Usernames</h2>
-  <ul id="results"></ul>
 
   <script src="script.js"></script>
 </body>
