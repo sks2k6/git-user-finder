@@ -1,5 +1,6 @@
 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-const checked = new Set(); // prevents duplicates
+let collected = [];
+const checked = new Set();
 
 function generateName(length, prefix) {
   let name = prefix;
@@ -23,27 +24,50 @@ function visitProfile(username) {
   window.open(`https://github.com/${username}`, "_blank");
 }
 
+function exportResults() {
+  if (collected.length === 0) {
+    alert("No results to export");
+    return;
+  }
+
+  const blob = new Blob([collected.join("\n")], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "available-usernames.txt";
+  link.click();
+}
+
 async function startFinding() {
   const length = parseInt(document.getElementById("length").value);
   const prefix = document.getElementById("prefix").value.toLowerCase();
   const results = document.getElementById("results");
+  const progress = document.getElementById("progress");
+  const status = document.getElementById("status");
 
   results.innerHTML = "";
+  progress.style.width = "0%";
+  status.textContent = "Working...";
+  collected = [];
   checked.clear();
 
-  if (!length) {
-    alert("Please enter username length");
+  if (!length || length < 1) {
+    alert("Enter valid length");
     return;
   }
 
-  let found = 0;
-  let attempts = 0;
+  if (prefix.length > length) {
+    alert("Prefix length cannot be greater than total length");
+    return;
+  }
 
-  while (found < 10 && attempts < 200) {
+  let attempts = 0;
+  const maxAttempts = 150;
+  const targetFind = 10;
+
+  while (attempts < maxAttempts && collected.length < targetFind) {
     attempts++;
 
     const username = generateName(length, prefix);
-
     if (checked.has(username)) continue;
     checked.add(username);
 
@@ -51,8 +75,9 @@ async function startFinding() {
       const available = await checkUsername(username);
 
       if (available) {
-        const li = document.createElement("li");
+        collected.push(username);
 
+        const li = document.createElement("li");
         li.innerHTML = `
           <span>${username}</span>
           <div class="icons">
@@ -60,15 +85,18 @@ async function startFinding() {
             <span onclick="visitProfile('${username}')">🔗</span>
           </div>
         `;
-
         results.appendChild(li);
-        found++;
       }
 
-      await new Promise(r => setTimeout(r, 700));
+      progress.style.width = `${(attempts / maxAttempts) * 100}%`;
+      status.textContent = `Checked: ${attempts} | Found: ${collected.length}`;
+
+      await new Promise(r => setTimeout(r, 500));
 
     } catch (err) {
-      console.log("Error");
+      console.log("API error");
     }
   }
+
+  status.textContent = `Finished. Found ${collected.length} usernames.`;
 }
