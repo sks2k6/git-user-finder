@@ -1,4 +1,4 @@
-const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+const chars = "abcdefghijklmnopqrstuvwxyz0123456789-";
 let collected = [];
 const checked = new Set();
 
