@@ -12,19 +12,20 @@
     <label>Username length</label>
     <input type="number" id="length" placeholder="e.g. 4">
 
-    <label>Prefix (optional)</label>
-    <input type="text" id="prefix" placeholder="e.g. dev">
+    <label>Name / Base word</label>
+    <input type="text" id="prefix" placeholder="e.g. syam">
 
     <button onclick="startFinding()">Start Finding</button>
 
+    <!-- Progress bar -->
     <div class="progress-container">
       <div id="progress"></div>
     </div>
 
+    <!-- Status -->
     <p id="status">Idle</p>
 
-    <button class="export" onclick="exportResults()">Export Results (.txt)</button>
-
+    <!-- Results -->
     <ul id="results"></ul>
   </div>
 
